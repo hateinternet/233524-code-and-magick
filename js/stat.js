@@ -8,9 +8,7 @@ var drawCloud = function (ctx, color, offset) {
   var widthCloud = 420;
   var heightCloud = 270;
 
-  if (offset === 'undefined') {
-    offset = 0;
-  }
+  offset = offset ? offset : 0;
 
   ctx.beginPath();
   ctx.moveTo(cloudX + offset, cloudY + offset);
