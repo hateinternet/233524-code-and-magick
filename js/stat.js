@@ -7,14 +7,17 @@ var drawCloud = function (ctx, color, offset) {
   var cloudY = 10;
   var widthCloud = 420;
   var heightCloud = 270;
-
   offset = offset ? offset : 0;
+  var tmpOffsetY = cloudY + offset;
+  var tmpOffsetX = cloudX + offset;
+  var tmpOffsetHeightY = tmpOffsetY + heightCloud;
+  var tmpOffsetWidthX = tmpOffsetX + widthCloud;
 
   ctx.beginPath();
-  ctx.moveTo(cloudX + offset, cloudY + offset);
-  ctx.lineTo(cloudX + widthCloud + offset, cloudY + offset);
-  ctx.lineTo(cloudX + widthCloud - 40 + offset, cloudY + heightCloud + offset);
-  ctx.lineTo(cloudX - 40 + offset, cloudY + heightCloud + offset);
+  ctx.moveTo(tmpOffsetX, tmpOffsetY);
+  ctx.lineTo(tmpOffsetWidthX, tmpOffsetY);
+  ctx.lineTo(tmpOffsetWidthX - 40, tmpOffsetHeightY);
+  ctx.lineTo(tmpOffsetX - 40, tmpOffsetHeightY);
   ctx.closePath();
   ctx.fillStyle = color;
   ctx.stroke();
