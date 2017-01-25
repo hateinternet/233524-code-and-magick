@@ -1,27 +1,33 @@
 'use strict';
 
-// Отрисовать поле-облачко и текст поздравления
+// Отрисовать поле гистограммы (с возможным смещением offset)
 
-var drawCloud = function (ctx, cloudX, cloudY, widthCloud, heightCloud) {
+var drawCloud = function (ctx, color, offset) {
+  var cloudX = 100;
+  var cloudY = 10;
+  var widthCloud = 420;
+  var heightCloud = 270;
+
+  if (offset === 'undefined') {
+    offset = 0;
+  }
+
   ctx.beginPath();
-  ctx.moveTo(cloudX + 10, cloudY + 10);
-  ctx.lineTo(cloudX + widthCloud + 10, cloudY + 10);
-  ctx.lineTo(cloudX + widthCloud - 40 + 10, cloudY + heightCloud + 10);
-  ctx.lineTo(cloudX - 40 + 10, cloudY + heightCloud + 10);
+  ctx.moveTo(cloudX + offset, cloudY + offset);
+  ctx.lineTo(cloudX + widthCloud + offset, cloudY + offset);
+  ctx.lineTo(cloudX + widthCloud - 40 + offset, cloudY + heightCloud + offset);
+  ctx.lineTo(cloudX - 40 + offset, cloudY + heightCloud + offset);
   ctx.closePath();
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+  ctx.fillStyle = color;
   ctx.stroke();
   ctx.fill();
+};
 
-  ctx.beginPath();
-  ctx.moveTo(cloudX, cloudY);
-  ctx.lineTo(cloudX + widthCloud, cloudY);
-  ctx.lineTo(cloudX + widthCloud - 40, cloudY + heightCloud);
-  ctx.lineTo(cloudX - 40, cloudY + heightCloud);
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-  ctx.stroke();
-  ctx.fill();
+// Добавить на поле гистограммы поздравительный текст
+
+var addText = function (ctx) {
+  var cloudX = 100;
+  var cloudY = 10;
 
   ctx.font = '16px PT Mono';
   ctx.fillStyle = 'rgba(0, 0, 0, 1)';
@@ -29,72 +35,59 @@ var drawCloud = function (ctx, cloudX, cloudY, widthCloud, heightCloud) {
   ctx.fillText('Список результатов:', cloudX + 50, cloudY + 40);
 };
 
-/* Сортировать массив времени по возрастанию, а также менять местами элементы
-массива имен, для сохранения связи между парами "время - имя игрока" */
-
-var sortArrays = function (times, names) {
-  var cache;
-  for (var i = 0; i < times.length - 1; i++) {
-    for (var j = 0; j < times.length - 1 - i; j++) {
-      if (times[j + 1] < times[j]) {
-        cache = times[j + 1];
-        times[j + 1] = times[j];
-        times[j] = cache;
-
-        cache = names[j + 1];
-        names[j + 1] = names[j];
-        names[j] = cache;
-      }
-    }
-  }
-};
-
 var isUser = function (name) {
   return name === 'Вы';
 };
 
-// Вывести детали статистики: имя игрока + время прохождения
+// Вывести детали статистики: имя игрока и время прохождения
 
-var showDetail = function (ctx, name, time, columnStartX, columnStartY, columnWidth, columnHeight) {
+var showDetail = function (ctx, name, time, columnStartX, columnStartY, columnHeight) {
   ctx.font = '16px PT Mono';
   ctx.fillStyle = 'rgba(0, 0, 0, 1)';
   ctx.fillText(Math.round(time), columnStartX, columnHeight + 240);
   ctx.fillText(name, columnStartX, columnStartY + 20);
 };
 
-// Покрасить колонки в синий цвет в зависимости от значения времени
-var paintBlue = function (time, maxTime) {
-  return 'rgb(0, 0, ' + Math.round(255 / maxTime * time) + ')';
+var compareTime = function (infoFirst, infoSecond) {
+  return infoFirst.time - infoSecond.time;
+};
+
+// Создать массив объектов из массивов names и times, и отсортировать его по возрастанию времени
+
+var sortArrays = function (names, times) {
+  var info = [];
+  for (var i = 0; i < names.length; i++) {
+    info[i] = {
+      time: times[i],
+      name: names[i]
+    };
+  }
+  return info.sort(compareTime);
 };
 
 // Отрисовать столбцы гистограммы
-var drawColumns = function (ctx, names, times, columnStartX, columnStartY, columnWidth, columnMaxHeight, columnDistance) {
-  var maxTime = times[times.length - 1];
-  var columnHeight;
 
-  for (var i = 0; i < names.length; i++) {
-    ctx.fillStyle = (isUser(names[i])) ? 'rgb(255, 0, 0)' : paintBlue(times[i], maxTime);
-    columnHeight = -(columnMaxHeight / maxTime * times[i]);
-    ctx.fillRect(columnStartX, columnStartY, columnWidth, columnHeight);
-    showDetail(ctx, names[i], times[i], columnStartX, columnStartY, columnWidth, columnHeight, columnDistance);
-    columnStartX += columnWidth + columnDistance;
-  }
-};
-
-window.renderStatistics = function (ctx, names, times) {
-  var cloudStartX = 100;
-  var cloudStartY = 10;
-  var widthCloud = 420;
-  var heightCloud = 270;
-
-  drawCloud(ctx, cloudStartX, cloudStartY, widthCloud, heightCloud);
-  sortArrays(times, names);
-
+var drawColumns = function (ctx, info) {
   var columnStartX = 130;
   var columnStartY = 250;
   var columnWidth = 40;
   var columnMaxHeight = 150;
   var columnDistance = 50;
+  var columnHeight;
+  var maxTime = (info[info.length - 1].time);
 
-  drawColumns(ctx, names, times, columnStartX, columnStartY, columnWidth, columnMaxHeight, columnDistance);
+  for (var i = 0; i < info.length; i++) {
+    ctx.fillStyle = (isUser(info[i].name)) ? 'rgb(255, 0, 0)' : 'rgb(0, 0, ' + Math.round(255 / maxTime * info[i].time) + ')';
+    columnHeight = -(columnMaxHeight / maxTime * info[i].time);
+    ctx.fillRect(columnStartX, columnStartY, columnWidth, columnHeight);
+    showDetail(ctx, info[i].name, info[i].time, columnStartX, columnStartY, columnHeight, columnDistance);
+    columnStartX += columnWidth + columnDistance;
+  }
+};
+
+window.renderStatistics = function (ctx, names, times) {
+  drawCloud(ctx, 'rgba(0, 0, 0, 0.7)', 10);
+  drawCloud(ctx, 'rgba(255, 255, 255, 1)');
+  addText(ctx);
+  drawColumns(ctx, sortArrays(names, times));
 };
