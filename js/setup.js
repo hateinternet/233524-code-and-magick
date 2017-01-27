@@ -54,5 +54,5 @@ wizardEyes.addEventListener('click', function () {
 });
 
 wizardFireball.addEventListener('click', function () {
-  wizardFireball.style.backgroundColor = wizardFireballColors[Math.floor(Math.random() * 5)];
+  wizardFireball.style.backgroundColor = wizardFireballColors[Math.floor(Math.random() * wizardFireballColors.length - 1)];
 });
