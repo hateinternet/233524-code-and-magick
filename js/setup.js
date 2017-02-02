@@ -1,9 +1,11 @@
 'use strict';
 
 var setupOpen = document.querySelector('.setup-open');
+var setupOpenBtn = setupOpen.querySelector('.setup-open-icon');
 var setupWindow = document.querySelector('.setup');
 var setupClose = setupWindow.querySelector('.setup-close');
 var fieldUserName = setupWindow.querySelector('.setup-user-name');
+var btnSubmit = setupWindow.querySelector('.setup-submit');
 var wizardCoat = setupWindow.querySelector('#wizard-coat');
 var wizardCoatColors = [
   'rgb(101, 137, 164)',
@@ -32,16 +34,62 @@ var wizardFireballColors = [
   '#e6e848'
 ];
 
+var ENTER_KEY_CODE = 13;
+var ESCAPE_KEY_CODE = 27;
+
 fieldUserName.required = true;
 fieldUserName.maxLength = 50;
 
-setupOpen.addEventListener('click', function () {
+var isActivateEvent = function (evt) {
+  return evt.keyCode && evt.keyCode === ENTER_KEY_CODE;
+};
+
+var isDeactivateEvent = function (evt) {
+  return evt.keyCode && evt.keyCode === ESCAPE_KEY_CODE;
+};
+
+var showDialog = function () {
   setupWindow.classList.remove('invisible');
+  setupOpenBtn.setAttribute('aria-pressed', true);
+  setupClose.setAttribute('aria-pressed', false);
+};
+
+var hideDialog = function () {
+  setupWindow.classList.add('invisible');
+  setupOpenBtn.setAttribute('aria-pressed', false);
+  setupClose.setAttribute('aria-pressed', true);
+};
+
+var setupOpenHandler = function () {
+  showDialog();
+  document.addEventListener('keydown', function (evnt) {
+    if (isDeactivateEvent(evnt)) {
+      hideDialog();
+    }
+  });
+};
+
+var setupCloseHandler = function (evt) {
+  if (isActivateEvent(evt)) {
+    hideDialog();
+  }
+};
+
+setupOpen.addEventListener('click', setupOpenHandler);
+
+setupOpen.addEventListener('keydown', function (evt) {
+  if (isActivateEvent(evt)) {
+    setupOpenHandler();
+  }
 });
 
-setupClose.addEventListener('click', function () {
-  setupWindow.classList.add('invisible');
-});
+setupClose.addEventListener('click', hideDialog);
+
+setupClose.addEventListener('keydown', setupCloseHandler);
+
+btnSubmit.addEventListener('click', hideDialog);
+
+btnSubmit.addEventListener('keydown', setupCloseHandler);
 
 wizardCoat.addEventListener('click', function () {
   colorsCoatCounter = (colorsCoatCounter >= wizardCoatColors.length - 1) ? 0 : colorsCoatCounter + 1;
