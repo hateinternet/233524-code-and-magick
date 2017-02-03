@@ -58,15 +58,18 @@ var hideDialog = function () {
   setupWindow.classList.add('invisible');
   setupOpenBtn.setAttribute('aria-pressed', false);
   setupClose.setAttribute('aria-pressed', true);
+  document.removeEventListener('keydown', escapePressHandler);
+};
+
+var escapePressHandler = function (evnt) {
+  if (isDeactivateEvent(evnt)) {
+    hideDialog();
+  }
 };
 
 var setupOpenHandler = function () {
   showDialog();
-  document.addEventListener('keydown', function (evnt) {
-    if (isDeactivateEvent(evnt)) {
-      hideDialog();
-    }
-  });
+  document.addEventListener('keydown', escapePressHandler);
 };
 
 var setupCloseHandler = function (evt) {
