@@ -49,6 +49,7 @@ var isDeactivateEvent = function (evt) {
 };
 
 var showDialog = function () {
+  document.addEventListener('keydown', escapePressHandler);
   setupWindow.classList.remove('invisible');
   setupOpenBtn.setAttribute('aria-pressed', true);
   setupClose.setAttribute('aria-pressed', false);
@@ -67,32 +68,26 @@ var escapePressHandler = function (evnt) {
   }
 };
 
-var setupOpenHandler = function () {
-  showDialog();
-  document.addEventListener('keydown', escapePressHandler);
-};
-
-var setupCloseHandler = function (evt) {
-  if (isActivateEvent(evt)) {
-    hideDialog();
-  }
-};
-
-setupOpen.addEventListener('click', setupOpenHandler);
-
+setupOpen.addEventListener('click', showDialog);
 setupOpen.addEventListener('keydown', function (evt) {
   if (isActivateEvent(evt)) {
-    setupOpenHandler();
+    showDialog();
   }
 });
 
 setupClose.addEventListener('click', hideDialog);
-
-setupClose.addEventListener('keydown', setupCloseHandler);
+setupClose.addEventListener('keydown', function (evt) {
+  if (isActivateEvent(evt)) {
+    hideDialog();
+  }
+});
 
 btnSubmit.addEventListener('click', hideDialog);
-
-btnSubmit.addEventListener('keydown', setupCloseHandler);
+btnSubmit.addEventListener('keydown', function (evt) {
+  if (isActivateEvent(evt)) {
+    hideDialog();
+  }
+});
 
 wizardCoat.addEventListener('click', function () {
   colorsCoatCounter = (colorsCoatCounter >= wizardCoatColors.length - 1) ? 0 : colorsCoatCounter + 1;
