@@ -1,19 +1,17 @@
 'use strict';
 
-var changeColor = function (element, colors, property, currentValue) {
-  currentValue = window.utils.getRandomElementExcept(colors, currentValue);
-  element.style[property] = currentValue;
-  return currentValue;
-};
-
 window.colorizeElement = function (element, colors, property) {
+  var changeColor = function () {
+    currentValue = window.utils.getRandomElementExcept(colors, currentValue);
+    element.style[property] = currentValue;
+  };
   var currentValue = element.style[property];
   element.addEventListener('click', function () {
-    currentValue = changeColor(element, colors, property, currentValue);
+    changeColor();
   });
   element.addEventListener('keydown', function (evt) {
-    if (window.isActivateEvent(evt)) {
-      currentValue = changeColor(element, colors, property, currentValue);
+    if (window.checkPressedEnter(evt)) {
+      changeColor();
     }
   });
 };

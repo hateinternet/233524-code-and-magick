@@ -3,7 +3,7 @@
 window.utils = {};
 
 window.utils.getRandomElement = function (array) {
-  return array[Math.floor(Math.random() * (array.length - 1))];
+  return array[Math.floor(Math.random() * array.length)];
 };
 
 window.utils.getRandomElementExcept = function (array, element) {

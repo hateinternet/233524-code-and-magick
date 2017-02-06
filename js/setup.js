@@ -50,28 +50,28 @@ var hideDialog = function () {
 };
 
 var escapePressHandler = function (evt) {
-  if (window.isDeactivateEvent(evt)) {
+  if (window.checkPressedEsc(evt)) {
     hideDialog();
   }
 };
 
 setupOpen.addEventListener('click', showDialog);
 setupOpen.addEventListener('keydown', function (evt) {
-  if (window.isActivateEvent(evt)) {
+  if (window.checkPressedEnter(evt)) {
     showDialog();
   }
 });
 
 setupClose.addEventListener('click', hideDialog);
 setupClose.addEventListener('keydown', function (evt) {
-  if (window.isActivateEvent(evt)) {
+  if (window.checkPressedEnter(evt)) {
     hideDialog();
   }
 });
 
 btnSubmit.addEventListener('click', hideDialog);
 btnSubmit.addEventListener('keydown', function (evt) {
-  if (window.isActivateEvent(evt)) {
+  if (window.checkPressedEnter(evt)) {
     hideDialog();
   }
 });
