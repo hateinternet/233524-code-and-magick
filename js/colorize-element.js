@@ -6,9 +6,7 @@ window.colorizeElement = function (element, colors, property) {
     element.style[property] = currentValue;
   };
   var currentValue = element.style[property];
-  element.addEventListener('click', function () {
-    changeColor();
-  });
+  element.addEventListener('click', changeColor);
   element.addEventListener('keydown', function (evt) {
     if (window.checkPressedEnter(evt)) {
       changeColor();
