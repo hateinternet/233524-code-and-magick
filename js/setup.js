@@ -35,11 +35,16 @@
   fieldUserName.required = true;
   fieldUserName.maxLength = 50;
 
-  var showDialog = function () {
+  var onSetupOpen = null;
+
+  var showDialog = function (callback) {
     document.addEventListener('keydown', escapePressHandler);
     setupWindow.classList.remove('invisible');
     setupOpenBtn.setAttribute('aria-pressed', true);
     setupClose.setAttribute('aria-pressed', false);
+    if (typeof callback === 'function') {
+      onSetupOpen = callback;
+    }
   };
 
   var hideDialog = function () {
@@ -47,6 +52,9 @@
     setupOpenBtn.setAttribute('aria-pressed', false);
     setupClose.setAttribute('aria-pressed', true);
     document.removeEventListener('keydown', escapePressHandler);
+    if (typeof onSetupOpen === 'function') {
+      onSetupOpen();
+    }
   };
 
   var escapePressHandler = function (evt) {
@@ -55,12 +63,16 @@
     }
   };
 
-  setupOpen.addEventListener('click', showDialog);
-  setupOpen.addEventListener('keydown', function (evt) {
+  var onSetupKeydown = function (evt) {
     if (window.checkEvents.checkPressedEnter(evt)) {
-      showDialog();
+      showDialog(function () {
+        setupOpenBtn.focus();
+      });
     }
-  });
+  };
+
+  setupOpen.addEventListener('click', showDialog);
+  setupOpen.addEventListener('keydown', onSetupKeydown);
 
   setupClose.addEventListener('click', hideDialog);
   setupClose.addEventListener('keydown', function (evt) {
@@ -76,8 +88,28 @@
     }
   });
 
-  window.colorizeElement(wizardCoat, wizardCoatColors, 'fill');
-  window.colorizeElement(wizardEyes, wizardEyesColors, 'fill');
-  window.colorizeElement(wizardFireball, wizardFireballColors, 'backgroundColor');
+  var colorizingType = function (element, colors, property) {
+    var changeColor = function () {
+      currentValue = window.utils.getRandomElementExcept(colors, currentValue);
+      element.style[property] = currentValue;
+    };
+    var currentValue = element.style[property];
+    element.addEventListener('click', changeColor);
+    element.addEventListener('keydown', function (evt) {
+      if (window.checkEvents.checkPressedEnter(evt)) {
+        changeColor();
+      }
+    });
+  };
+
+  window.colorizeElement(function () {
+    colorizingType(wizardCoat, wizardCoatColors, 'fill');
+  });
+  window.colorizeElement(function () {
+    colorizingType(wizardEyes, wizardEyesColors, 'fill');
+  });
+  window.colorizeElement(function () {
+    colorizingType(wizardFireball, wizardFireballColors, 'backgroundColor');
+  });
 
 })();
