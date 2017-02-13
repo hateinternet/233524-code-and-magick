@@ -71,13 +71,13 @@
       setupWindow.classList.remove('invisible');
       setupOpenBtn.setAttribute('aria-pressed', true);
       setupClose.setAttribute('aria-pressed', false);
+
+      setupClose.addEventListener('click', hideDialog);
+      setupClose.addEventListener('keydown', offSetupKeydown);
+
+      btnSubmit.addEventListener('click', hideDialog);
+      btnSubmit.addEventListener('keydown', offSetupKeydown);
     };
-
-    setupClose.addEventListener('click', hideDialog);
-    setupClose.addEventListener('keydown', offSetupKeydown);
-
-    btnSubmit.addEventListener('click', hideDialog);
-    btnSubmit.addEventListener('keydown', offSetupKeydown);
 
     var colorizingType = function (element, colors, property) {
       var changeColor = function () {
@@ -104,11 +104,10 @@
     });
 
     return function (callback) {
-      showDialog();
       onSetupOpen = callback;
-      window.console.log(onSetupOpen);
-    }();
-  };
+      showDialog();
+    };
+  }();
 
   var onSetupKeydown = function (evt) {
     if (window.checkEvents.checkPressedEnter(evt)) {
