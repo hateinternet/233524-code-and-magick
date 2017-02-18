@@ -4,6 +4,7 @@
   var setupOpen = document.querySelector('.setup-open');
   var setupOpenBtn = setupOpen.querySelector('.setup-open-icon');
   var setupWindow = document.querySelector('.setup');
+  var setupSimilar;
   var setupClose = setupWindow.querySelector('.setup-close');
   var fieldUserName = setupWindow.querySelector('.setup-user-name');
   var btnSubmit = setupWindow.querySelector('.setup-submit');
@@ -83,6 +84,9 @@
       var changeColor = function () {
         currentValue = window.utils.getRandomElementExcept(colors, currentValue);
         element.style[property] = currentValue;
+        setTimeout(function () {
+          window.load(URL_DATA, showWizards);
+        }, 5000);
       };
       var currentValue = element.style[property];
       element.addEventListener('click', changeColor);
@@ -103,9 +107,34 @@
       colorizingType(wizardFireball, wizardFireballColors, 'backgroundColor');
     });
 
+    btnSubmit.style.left = '15%';
+    setupSimilar = document.createElement('div');
+    setupWindow.appendChild(setupSimilar);
+    setupSimilar.classList.add('setup-similar');
+    setupSimilar.style.display = 'flex';
+    setupSimilar.style.justifyContent = 'space-between';
+    setupSimilar.style.alignItems = 'top';
+    setupSimilar.style.position = 'absolute';
+    setupSimilar.style.bottom = '20px';
+    setupSimilar.style.left = '30%';
+    setupSimilar.style.width = '550px';
+    setupSimilar.style.height = '100px';
+    window.utils.changeIdToClass(document.querySelector('#wizard'));
+
+    var URL_DATA = 'https://intensive-javascript-server-myophkugvq.now.sh/code-and-magick/data';
+    var showWizards = function (data) {
+      setupSimilar.innerHTML = '';
+      var wizards = data;
+      var randomWizards = window.utils.getSetOfRandomElements(wizards, 5);
+      for (var i = 0; i < randomWizards.length; i++) {
+        setupSimilar.appendChild(window.renderWizard(randomWizards[i]));
+      }
+    };
+
     return function (callback) {
       onSetupOpen = callback;
       showDialog();
+      window.load(URL_DATA, showWizards);
     };
   }();
 
