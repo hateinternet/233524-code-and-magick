@@ -4,7 +4,7 @@
   var setupOpen = document.querySelector('.setup-open');
   var setupOpenBtn = setupOpen.querySelector('.setup-open-icon');
   var setupWindow = document.querySelector('.setup');
-  var setupSimilar;
+  var setupSimilar = document.querySelector('.setup-similar');
   var setupClose = setupWindow.querySelector('.setup-close');
   var fieldUserName = setupWindow.querySelector('.setup-user-name');
   var btnSubmit = setupWindow.querySelector('.setup-submit');
@@ -33,6 +33,7 @@
     '#e848d5',
     '#e6e848'
   ];
+  var timerId;
 
   fieldUserName.required = true;
   fieldUserName.maxLength = 50;
@@ -84,7 +85,8 @@
       var changeColor = function () {
         currentValue = window.utils.getRandomElementExcept(colors, currentValue);
         element.style[property] = currentValue;
-        setTimeout(function () {
+        clearTimeout(timerId);
+        timerId = setTimeout(function () {
           window.load(URL_DATA, showWizards);
         }, 5000);
       };
@@ -107,20 +109,7 @@
       colorizingType(wizardFireball, wizardFireballColors, 'backgroundColor');
     });
 
-    btnSubmit.style.left = '15%';
-    setupSimilar = document.createElement('div');
-    setupWindow.appendChild(setupSimilar);
-    setupSimilar.classList.add('setup-similar');
-    setupSimilar.style.display = 'flex';
-    setupSimilar.style.justifyContent = 'space-between';
-    setupSimilar.style.alignItems = 'top';
-    setupSimilar.style.position = 'absolute';
-    setupSimilar.style.bottom = '20px';
-    setupSimilar.style.left = '30%';
-    setupSimilar.style.width = '550px';
-    setupSimilar.style.height = '100px';
     window.utils.changeIdToClass(document.querySelector('#wizard'));
-
     var URL_DATA = 'https://intensive-javascript-server-myophkugvq.now.sh/code-and-magick/data';
     var showWizards = function (data) {
       setupSimilar.innerHTML = '';

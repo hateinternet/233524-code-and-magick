@@ -672,7 +672,7 @@ input[type=radio]:checked + .review-mark-label {
 
 .setup-submit {
   position: absolute;
-  left: 50%;
+  left: 15%;
   bottom: 30px;
 
   transform: translateX(-50%);
@@ -683,6 +683,31 @@ input[type=radio]:checked + .review-mark-label {
 
 .setup-submit:disabled {
   opacity: 0.3;
+}
+
+.setup-similar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  position: absolute;
+  bottom: 20px;
+  left: 30%;
+  width: 550px;
+  height: 100px;
+}
+
+.setup-similar .setup-wizard-wrap {
+  width: 70px;
+}
+
+.setup-similar span {
+  font-size: 12px;
+}
+
+.setup-similar svg {
+  position: static;
+  width: 50px;
+  height: 50px;
 }
 
 .overlay-gallery {
