@@ -33,6 +33,7 @@
     '#e848d5',
     '#e6e848'
   ];
+  var wizards = [];
   var timerId;
 
   fieldUserName.required = true;
@@ -113,7 +114,7 @@
     var URL_DATA = 'https://intensive-javascript-server-myophkugvq.now.sh/code-and-magick/data';
     var showWizards = function (data) {
       setupSimilar.innerHTML = '';
-      var wizards = data;
+      wizards = data;
       var randomWizards = window.utils.getSetOfRandomElements(wizards, 5);
       for (var i = 0; i < randomWizards.length; i++) {
         setupSimilar.appendChild(window.renderWizard(randomWizards[i]));
